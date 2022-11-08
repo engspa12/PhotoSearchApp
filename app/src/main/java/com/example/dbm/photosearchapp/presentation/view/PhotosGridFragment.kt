@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.databinding.FragmentPhotosGridBinding
 import com.example.dbm.photosearchapp.presentation.model.PhotoView
+import com.example.dbm.photosearchapp.presentation.view.adapter.PhotosAdapter
 import com.example.dbm.photosearchapp.presentation.viewmodel.PhotosViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -48,17 +49,30 @@ class PhotosGridFragment: Fragment(R.layout.fragment_photos_grid), PhotosAdapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.uiState.collect { state ->
+                    //Update list of items with new content
                     if(state.listHasChanged) {
                         updateRecyclerView(state.listPhotos)
                     }
 
+                    //Handle progress bar visibility
                     _binding?.progressBar?.visibility = if (state.isLoading) View.VISIBLE else View.GONE
                     _binding?.progressBarMessage?.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 
+                    //Handle empty list message visibility
                     if(state.listPhotos.isEmpty()){
                         _binding?.recyclerView?.visibility = View.GONE
                         _binding?.emptyMessage?.visibility = if (state.isLoading) View.GONE else View.VISIBLE
                         _binding?.emptyMessage?.text = getString(R.string.list_is_empty)
+                    } else {
+                        _binding?.recyclerView?.visibility = View.VISIBLE
+                        _binding?.emptyMessage?.visibility = View.GONE
+                    }
+
+                    //Handle error message visibility
+                    if(state.errorPresent){
+                        _binding?.recyclerView?.visibility = View.GONE
+                        _binding?.emptyMessage?.visibility = if (state.isLoading) View.GONE else View.VISIBLE
+                        _binding?.emptyMessage?.text = state.errorMessage.asString(requireContext())
                     } else {
                         _binding?.recyclerView?.visibility = View.VISIBLE
                         _binding?.emptyMessage?.visibility = View.GONE

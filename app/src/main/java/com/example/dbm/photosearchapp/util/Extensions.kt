@@ -6,6 +6,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.data.model.PhotoNetwork
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,11 +40,17 @@ fun PhotoNetwork.getImageUrl(): String {
 
 fun String.formatDate(): String {
 
-    val onlyDateString = this.substring(0, 10)
     val oldFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     val newFormatter = SimpleDateFormat("EEE dd yyyy", Locale.US)
 
-    val date = oldFormatter.parse(onlyDateString)
+    val date: Date = try {
+        val onlyDateString = this.substring(0, 10)
+        oldFormatter.parse(onlyDateString) ?: Date()
+    } catch (e: ParseException){
+        Date()
+    } catch (e: IndexOutOfBoundsException){
+        Date()
+    }
 
-    return newFormatter.format(date ?: Date())
+    return newFormatter.format(date)
 }

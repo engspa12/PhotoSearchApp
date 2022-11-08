@@ -1,13 +1,9 @@
 package com.example.dbm.photosearchapp.presentation.view
 
 import android.content.Context
-import android.net.wifi.WifiManager
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.dbm.photosearchapp.R
@@ -21,13 +17,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import javax.inject.Inject
 import androidx.test.espresso.Espresso.onView
@@ -37,6 +31,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCase
+import com.example.dbm.photosearchapp.presentation.view.adapter.PhotosAdapter
 import org.hamcrest.CoreMatchers.not
 
 @OptIn(ExperimentalCoroutinesApi::class)

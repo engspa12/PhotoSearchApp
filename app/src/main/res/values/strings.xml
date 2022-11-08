@@ -10,4 +10,5 @@
     <string name="item_content_description">Item Image</string>
     <string name="loading_items">Loading Items…</string>
     <string name="list_is_empty">The list is empty</string>
+    <string name="error_unknown">An error occurred with the next message: %1$s</string>
 </resources>

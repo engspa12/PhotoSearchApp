@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.dbm.photosearchapp.di.UseCasesModule
@@ -32,6 +31,8 @@ import org.mockito.junit.MockitoRule
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCase
 import com.example.dbm.photosearchapp.launchFragmentInHiltContainer
+import com.example.dbm.photosearchapp.util.MessageWrapper
+import com.example.dbm.photosearchapp.util.ResultWrapper
 import org.junit.After
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -84,7 +85,7 @@ class PhotosGridFragmentIntegrationTest {
     }
 
     @Test
-    fun getPhotos_obtainEmptyList_failedResponse(){
+    fun getPhotos_obtainErrorMessage_failedResponse(){
         return runTest {
             failureResponse()
 
@@ -96,6 +97,7 @@ class PhotosGridFragmentIntegrationTest {
             onView(withId(R.id.recycler_view)).check(matches(not(isDisplayed())))
             onView(withId(R.id.progress_bar_message)).check(matches(not(isDisplayed())))
             onView(withId(R.id.empty_message)).check(matches(isDisplayed()))
+            onView(withText(context.getString(R.string.error_message))).check(matches(isDisplayed()))
         }
     }
 
@@ -116,13 +118,13 @@ class PhotosGridFragmentIntegrationTest {
         list.add(PhotoView(id = 3, title = "Title 3", date = "Date 3", author = "Author 3", imgUrl = "https://live.staticflickr.com/65535/52480965393_bb5ecc0466_h.jpg"))
 
         Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenReturn(
-            list
+            ResultWrapper.Success(list)
         )
     }
 
     private suspend fun failureResponse() {
         Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenReturn(
-            emptyList()
+            ResultWrapper.Failure(errorMessage = MessageWrapper(messageResource = R.string.error_message))
         )
     }
 }

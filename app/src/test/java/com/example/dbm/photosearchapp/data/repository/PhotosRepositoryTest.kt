@@ -6,6 +6,7 @@ import com.example.dbm.photosearchapp.data.model.FlickrPhotosResponse
 import com.example.dbm.photosearchapp.data.model.PhotoNetwork
 import com.example.dbm.photosearchapp.data.model.PhotosGroupNetwork
 import com.example.dbm.photosearchapp.domain.repository.IPhotosRepository
+import com.example.dbm.photosearchapp.util.ResultWrapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -52,22 +53,22 @@ class PhotosRepositoryTest {
 
             job.join()
 
-            val response = SUT.getPhotosFromFeed()
+            val response = SUT.getPhotosFromFeed() as ResultWrapper.Success
 
             verify(remoteAPI, times(1)).getPhotosFromFeed()
-            assertThat(response.size).isEqualTo(5)
-            assertThat(response[0].id).isEqualTo(0)
-            assertThat(response[0].title).isEqualTo("Title 0")
-            assertThat(response[0].author).isEqualTo("Owner Name 0")
-            assertThat(response[0].date).isEqualTo("Tue 18 2022")
-            assertThat(response[1].id).isEqualTo(1)
-            assertThat(response[1].title).isEqualTo("Title 1")
-            assertThat(response[1].author).isEqualTo("Owner Name 1")
-            assertThat(response[1].date).isEqualTo("Mon 17 2022")
-            assertThat(response[2].id).isEqualTo(2)
-            assertThat(response[2].title).isEqualTo("Title 2")
-            assertThat(response[2].author).isEqualTo("Owner Name 2")
-            assertThat(response[2].date).isEqualTo("Sun 16 2022")
+            assertThat(response.value.size).isEqualTo(5)
+            assertThat(response.value[0].id).isEqualTo(0)
+            assertThat(response.value[0].title).isEqualTo("Title 0")
+            assertThat(response.value[0].author).isEqualTo("Owner Name 0")
+            assertThat(response.value[0].date).isEqualTo("Tue 18 2022")
+            assertThat(response.value[1].id).isEqualTo(1)
+            assertThat(response.value[1].title).isEqualTo("Title 1")
+            assertThat(response.value[1].author).isEqualTo("Owner Name 1")
+            assertThat(response.value[1].date).isEqualTo("Mon 17 2022")
+            assertThat(response.value[2].id).isEqualTo(2)
+            assertThat(response.value[2].title).isEqualTo("Title 2")
+            assertThat(response.value[2].author).isEqualTo("Owner Name 2")
+            assertThat(response.value[2].date).isEqualTo("Sun 16 2022")
         }
     }
 
@@ -80,9 +81,10 @@ class PhotosRepositoryTest {
 
             job.join()
 
-            val response = SUT.getPhotosFromFeed()
+            val response = SUT.getPhotosFromFeed() as ResultWrapper.Failure
             verify(remoteAPI, times(1)).getPhotosFromFeed()
-            assertThat(response.size).isEqualTo(0)
+            assertThat(response.errorMessage.messageResource).isEqualTo(0)
+            assertThat(response.exception?.message).isEqualTo("An error occurred in networkResponse")
         }
     }
 

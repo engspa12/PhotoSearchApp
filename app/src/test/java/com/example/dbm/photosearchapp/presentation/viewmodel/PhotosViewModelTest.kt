@@ -23,7 +23,8 @@ import org.mockito.kotlin.verify
 import java.io.IOException
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCase
-import dagger.hilt.android.testing.BindValue
+import com.example.dbm.photosearchapp.util.MessageWrapper
+import com.example.dbm.photosearchapp.util.ResultWrapper
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @SmallTest
@@ -66,7 +67,7 @@ class PhotosViewModelTest {
             verify(getPhotosFromFeedUseCaseMock, times(1)).invoke()
             assertThat(SUT.uiState.value.isLoading).isEqualTo(false)
             assertThat(SUT.uiState.value.errorPresent).isEqualTo(false)
-            assertThat(SUT.uiState.value.messageWrapper.messageResource).isEqualTo(0)
+            assertThat(SUT.uiState.value.errorMessage.messageResource).isEqualTo(0)
             assertThat(SUT.uiState.value.listPhotos[0].title).isEqualTo("Title 0")
             assertThat(SUT.uiState.value.listPhotos[1].date).isEqualTo("Date 1")
             assertThat(SUT.uiState.value.listPhotos[2].author).isEqualTo("Author 2")
@@ -90,7 +91,7 @@ class PhotosViewModelTest {
             verify(getPhotosFromFeedUseCaseMock, times(1)).invoke()
             assertThat(SUT.uiState.value.isLoading).isEqualTo(false)
             assertThat(SUT.uiState.value.errorPresent).isEqualTo(true)
-            assertThat(SUT.uiState.value.messageWrapper.messageResource).isEqualTo(R.string.error_message)
+            assertThat(SUT.uiState.value.errorMessage.messageResource).isEqualTo(R.string.error_message)
         }
     }
 
@@ -105,13 +106,16 @@ class PhotosViewModelTest {
 
 
         Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenReturn(
-           listPhotoView
+           ResultWrapper.Success(listPhotoView)
         )
     }
 
     private suspend fun failureResponse() {
-        Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenAnswer {
+        /*Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenAnswer {
             throw IOException("An error occurred in the ViewModel test")
-        }
+        }*/
+        Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenReturn(
+            ResultWrapper.Failure(errorMessage = MessageWrapper(messageResource = R.string.error_message))
+        )
     }
 }

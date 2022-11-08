@@ -10,6 +10,7 @@ import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCa
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosFromFeedUseCase
 import com.example.dbm.photosearchapp.presentation.state.PhotosUIState
 import com.example.dbm.photosearchapp.util.MessageWrapper
+import com.example.dbm.photosearchapp.util.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,18 +37,20 @@ class PhotosViewModel @Inject constructor(
     fun getPhotosBySearchTerm(searchTerm: String) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch(mainDispatcher) {
-            try {
-                val result = getPhotosBySearchTermUseCase(searchTerm = searchTerm)
-                _uiState.update {
-                    if(result.isEmpty()){
-                        it.copy(listPhotos = result, listHasChanged = true, messageWrapper = MessageWrapper(R.string.no_search_results_for, searchTerm))
-                    } else {
-                        it.copy(listPhotos = result, listHasChanged = true, messageWrapper = MessageWrapper(R.string.search_results_for, searchTerm))
+            when(val result = getPhotosBySearchTermUseCase(searchTerm = searchTerm)){
+                is ResultWrapper.Success -> {
+                    _uiState.update {
+                        if(result.value.isEmpty()){
+                            it.copy(listPhotos = result.value, listHasChanged = true, titleText = MessageWrapper(R.string.no_search_results_for, searchTerm), isLoading = false)
+                        } else {
+                            it.copy(listPhotos = result.value, listHasChanged = true, titleText = MessageWrapper(R.string.search_results_for, searchTerm), isLoading = false)
+                        }
                     }
                 }
-            } catch (e: IOException) {
-                _uiState.update {
-                    it.copy(errorPresent = true, messageWrapper = MessageWrapper(R.string.error_message))
+                is ResultWrapper.Failure -> {
+                    _uiState.update {
+                        it.copy(errorPresent = true, errorMessage = result.errorMessage, isLoading = false)
+                    }
                 }
             }
         }
@@ -58,14 +60,16 @@ class PhotosViewModel @Inject constructor(
         incrementIdlingResourceAPICall()
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch(mainDispatcher) {
-            try {
-                val result = getPhotosFromFeedUseCase()
-                _uiState.update {
-                    it.copy(listPhotos = result, listHasChanged = true, isLoading = false)
+            when(val result = getPhotosFromFeedUseCase()){
+                is ResultWrapper.Success -> {
+                    _uiState.update {
+                        it.copy(listPhotos = result.value, listHasChanged = true, isLoading = false)
+                    }
                 }
-            } catch (e: IOException) {
-                _uiState.update {
-                    it.copy(errorPresent = true, messageWrapper = MessageWrapper(R.string.error_message), isLoading = false)
+                is ResultWrapper.Failure -> {
+                    _uiState.update {
+                        it.copy(errorPresent = true, errorMessage = result.errorMessage, isLoading = false)
+                    }
                 }
             }
             //Delay added to wait for images to be completely loaded

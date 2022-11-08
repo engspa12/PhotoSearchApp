@@ -7,7 +7,8 @@ data class PhotosUIState(
     val shownIndex: Int = 0,
     val validShownIndex: Boolean = false,
     val errorPresent: Boolean = false,
-    val messageWrapper: MessageWrapper = MessageWrapper(),
+    val errorMessage: MessageWrapper = MessageWrapper(),
+    val titleText: MessageWrapper = MessageWrapper(),
     val listPhotos: List<PhotoView> = listOf(),
     val listHasChanged: Boolean = false,
     val isLoading: Boolean = false

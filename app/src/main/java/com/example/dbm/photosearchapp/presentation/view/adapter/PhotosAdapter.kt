@@ -1,4 +1,4 @@
-package com.example.dbm.photosearchapp.presentation.view
+package com.example.dbm.photosearchapp.presentation.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
