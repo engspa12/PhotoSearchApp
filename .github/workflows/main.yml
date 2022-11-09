@@ -9,23 +9,33 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout the code
       uses: actions/checkout@v3
-
     - name: Run Lint
       run: ./gradlew lintDebug
-
     - name: Upload html test report
       uses: actions/upload-artifact@v3
       with:
         name: lint.html
         path: app/build/reports/lint-results-debug.html
 
-  build:
-
+  unit-tests:
     needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+    - name: Run unit tests
+      run: ./gradlew test
+    - name: Upload unit tests report
+      uses: actions/upload-artifact@v3
+      with:
+        name: unit_tests_report
+        path: app/build/reports/tests/testDebugUnitTest/
+
+  build:
+    needs: [unit-tests]
     runs-on: ubuntu-latest
 
     steps:

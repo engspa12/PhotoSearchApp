@@ -9,9 +9,9 @@ data class MessageWrapper(
 ) {
     fun asString(context: Context): String{
         return if(argForResource != null){
-            context.getString(messageResource, argForResource) ?: ""
+            context.getString(messageResource, argForResource)
         } else {
-            context.getString(messageResource) ?: ""
+            context.getString(messageResource)
         }
     }
 }
