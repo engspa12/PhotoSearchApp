@@ -7,8 +7,25 @@ on:
     branches: [ "main" ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+
+    - name: Run Lint
+      run: ./gradlew lintDebug
+
+    - name: Upload html test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: lint.html
+        path: app/build/reports/lint-results-debug.html
+
   build:
 
+    needs: [lint]
     runs-on: ubuntu-latest
 
     steps:
