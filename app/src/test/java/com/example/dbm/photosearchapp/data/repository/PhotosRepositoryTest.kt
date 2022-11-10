@@ -96,7 +96,7 @@ class PhotosRepositoryTest {
         } else {
             val listPhotosNetwork = ArrayList<PhotoNetwork>()
 
-            val flickrPhotosResponse = FlickrPhotosResponse()
+            val flickrPhotosResponse = FlickrPhotosResponse(stat = "ok")
             val photosGroupNetwork = PhotosGroupNetwork()
 
             photosGroupNetwork.photos = listPhotosNetwork

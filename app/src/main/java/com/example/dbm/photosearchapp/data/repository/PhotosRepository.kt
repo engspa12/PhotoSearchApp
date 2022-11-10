@@ -21,8 +21,12 @@ class PhotosRepository @Inject constructor(
         return withContext(coroutineDispatcher) {
             try {
                 val networkResponse = networkDataSource.getPhotosFromFeed()
-                val listPhotosDomain = convertToPhotosDomain(networkResponse.photosGroupNetwork.photos)
-                ResultWrapper.Success(listPhotosDomain)
+                if(networkResponse.stat == "ok"){
+                    val listPhotosDomain = convertToPhotosDomain(networkResponse.photosGroupNetwork.photos)
+                    ResultWrapper.Success(listPhotosDomain)
+                } else {
+                    ResultWrapper.Failure(exception = Exception("Invalid request"))
+                }
             } catch (e: Exception) {
                 ResultWrapper.Failure(exception = e)
             }
@@ -33,8 +37,12 @@ class PhotosRepository @Inject constructor(
        return withContext(coroutineDispatcher) {
            try {
                val networkResponse = networkDataSource.getPhotosBySearchTerm(searchTerm = searchTerm)
-               val listPhotosDomain = convertToPhotosDomain(networkResponse.photosGroupNetwork.photos)
-               ResultWrapper.Success(listPhotosDomain)
+               if(networkResponse.stat == "ok") {
+                   val listPhotosDomain = convertToPhotosDomain(networkResponse.photosGroupNetwork.photos)
+                   ResultWrapper.Success(listPhotosDomain)
+               } else {
+                   ResultWrapper.Failure(exception = Exception("Invalid request"))
+               }
            } catch (e: Exception){
                ResultWrapper.Failure(exception = e)
            }

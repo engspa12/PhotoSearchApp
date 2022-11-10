@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class FlickrPhotosResponse(
     @Json(name = "photos")
-    var photosGroupNetwork : PhotosGroupNetwork = PhotosGroupNetwork(),
+    var photosGroupNetwork: PhotosGroupNetwork = PhotosGroupNetwork(),
     @Json(name = "stat")
-    var stat   : String? = null
+    var stat: String? = null
 )

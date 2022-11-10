@@ -11,6 +11,16 @@ plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+    id "org.sonarqube" version "3.5.0.2730"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sources", "./src/main"
+        property "sonar.projectKey", "engspa12_PhotoSearchApp"
+        property "sonar.organization", "engspa12"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 task clean(type: Delete) {
