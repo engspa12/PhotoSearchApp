@@ -1,12 +1,8 @@
 <resources>
     <string name="app_name">PhotoSearchApp</string>
-    <string name="app_title">Trending Now On Flickr</string>
     <string name="error_message">An error occurred while retrieving the data</string>
-    <string name="title_badge">Title Badge</string>
     <string name="search_results_for">Search Results for \"%1$s\"</string>
     <string name="no_search_results_for">No search results for \"%1$s\"</string>
-    <string name="card_background">Card Background</string>
-    <string name="card_text">%1$s\n%2$s / %3$s</string>
     <string name="item_content_description">Item Image</string>
     <string name="loading_items">Loading Items…</string>
     <string name="list_is_empty">The list is empty</string>

@@ -9,7 +9,6 @@ import com.example.dbm.photosearchapp.domain.repository.IPhotosRepository
 import com.example.dbm.photosearchapp.util.ResultWrapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.io.IOException
 import javax.inject.Inject
 
 class PhotosRepository @Inject constructor(
