@@ -52,7 +52,6 @@ class PhotosAdapter(inputList: List<PhotoView> = listOf(), private val listener:
         val gridImageView: ImageView
 
         init {
-            // Define click listener for the ViewHolder's View.
             gridImageView = view.findViewById(R.id.grid_image_view)
         }
     }

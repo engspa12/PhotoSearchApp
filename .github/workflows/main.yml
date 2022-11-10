@@ -13,17 +13,22 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v3
 
-    - name: Run lint check
-      run: echo Run lint check
+#    - name: Run lint check
+#      run: echo Run lint check
 
-#    - name: Run Lint
-#      run: ./gradlew lintDebug
+    - name: Load API Token from secrets
+      run: echo API_KEY=$API_KEY > ./local.properties
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
 
-#    - name: Upload html test report
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: lint.html
-#        path: app/build/reports/lint-results-debug.html
+    - name: Run Lint
+      run: ./gradlew lintDebug
+
+    - name: Upload html test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: lint.html
+        path: app/build/reports/lint-results-debug.html
 
   unit-tests:
     needs: [lint]
@@ -32,17 +37,22 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v3
 
-    - name: Run unit tests
-      run: echo Run unit tests
-
 #    - name: Run unit tests
-#      run: ./gradlew test
+#      run: echo Run unit tests
 
-#    - name: Upload unit tests report
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: unit_tests_report
-#        path: app/build/reports/tests/testDebugUnitTest/
+    - name: Load API Token from secrets
+      run: echo API_KEY=$API_KEY > ./local.properties
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+
+    - name: Run unit tests
+      run: ./gradlew test
+
+    - name: Upload unit tests report
+      uses: actions/upload-artifact@v3
+      with:
+        name: unit_tests_report
+        path: app/build/reports/tests/testDebugUnitTest/
 
   instrumentation-tests:
     needs: [unit-tests]
@@ -51,33 +61,38 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v3
 
-    - name: Run UI tests
-      run: echo Run UI tests
-
-#    - name: set up JDK 11
-#      uses: actions/setup-java@v3
-#      with:
-#        java-version: '11'
-#        distribution: 'temurin'
-#        cache: gradle
-
-#    - name: Grant execute permission for gradlew
-#      run: chmod +x gradlew
-
 #    - name: Run UI tests
-#      uses: reactivecircus/android-emulator-runner@v2
-#      with:
-#        api-level: 29
-#        target: default
-#        arch: x86
-#        profile: Nexus 6
-#        script: ./gradlew connectedCheck --stacktrace
+#      run: echo Run UI tests
 
-#    - name: Upload UI tests report
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: ui_tests_report
-#        path: app/build/reports/androidTests/connected/
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Load API Token from secrets
+      run: echo API_KEY=$API_KEY > ./local.properties
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+
+    - name: Run UI tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        target: default
+        arch: x86
+        profile: Nexus 6
+        script: ./gradlew connectedCheck --stacktrace
+
+    - name: Upload UI tests report
+      uses: actions/upload-artifact@v3
+      with:
+        name: ui_tests_report
+        path: app/build/reports/androidTests/connected/
 
   static-code-analysis:
     needs: [instrumentation-tests]
