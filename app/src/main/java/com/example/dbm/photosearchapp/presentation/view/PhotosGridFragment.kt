@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.databinding.FragmentPhotosGridBinding
 import com.example.dbm.photosearchapp.presentation.model.PhotoView
+import com.example.dbm.photosearchapp.presentation.state.listIsEmpty
+import com.example.dbm.photosearchapp.presentation.util.PhotosViewError
+import com.example.dbm.photosearchapp.presentation.util.mapToStringResource
 import com.example.dbm.photosearchapp.presentation.view.adapter.PhotosAdapter
 import com.example.dbm.photosearchapp.presentation.viewmodel.PhotosViewModel
-import com.example.dbm.photosearchapp.util.MessageWrapper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -52,12 +54,12 @@ class PhotosGridFragment: Fragment(R.layout.fragment_photos_grid), PhotosAdapter
                 viewModel.uiState.collect { state ->
                     //Update list of items with new content
                     if(state.listHasChanged) {
-                        updateRecyclerView(state.listPhotos)
+                        updateRecyclerViewAdapter(state.listPhotos)
                     }
 
                     handleProgressBar(state.isLoading)
-                    handleEmptyListMessage(state.listPhotos.isEmpty(), state.isLoading)
-                    handleErrorMessage(state.errorPresent, state.isLoading, state.errorMessage)
+                    handleEmptyListMessage(state.listIsEmpty, state.isLoading)
+                    handleErrorMessage(state.errorPresent, state.isLoading, state.errorType)
                 }
             }
         }
@@ -66,17 +68,6 @@ class PhotosGridFragment: Fragment(R.layout.fragment_photos_grid), PhotosAdapter
     private fun handleProgressBar(isLoading: Boolean){
         _binding?.progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
         _binding?.progressBarMessage?.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun handleErrorMessage(errorPresent: Boolean, isLoading: Boolean, errorMessage: MessageWrapper){
-        if(errorPresent){
-            _binding?.recyclerView?.visibility = View.GONE
-            _binding?.emptyMessage?.visibility = if (isLoading) View.GONE else View.VISIBLE
-            _binding?.emptyMessage?.text = errorMessage.asString(requireContext())
-        } else {
-            _binding?.recyclerView?.visibility = View.VISIBLE
-            _binding?.emptyMessage?.visibility = View.GONE
-        }
     }
 
     private fun handleEmptyListMessage(listIsEmpty: Boolean, isLoading: Boolean){
@@ -90,7 +81,18 @@ class PhotosGridFragment: Fragment(R.layout.fragment_photos_grid), PhotosAdapter
         }
     }
 
-    private fun updateRecyclerView(list: List<PhotoView>){
+    private fun handleErrorMessage(errorPresent: Boolean, isLoading: Boolean, error: PhotosViewError){
+        if(errorPresent){
+            _binding?.recyclerView?.visibility = View.GONE
+            _binding?.emptyMessage?.visibility = if (isLoading) View.GONE else View.VISIBLE
+            _binding?.emptyMessage?.text = getString(error.mapToStringResource())
+        } else {
+            _binding?.recyclerView?.visibility = View.VISIBLE
+            _binding?.emptyMessage?.visibility = View.GONE
+        }
+    }
+
+    private fun updateRecyclerViewAdapter(list: List<PhotoView>){
         adapter.updateDataSet(list)
     }
 
@@ -115,4 +117,20 @@ class PhotosGridFragment: Fragment(R.layout.fragment_photos_grid), PhotosAdapter
 
         viewModel.listWasShown()
     }
+
+    /*override fun onItemClick(position: Int) {
+        val fragment = parentFragmentManager.findFragmentByTag("WebViewFrag")
+
+        if(fragment == null){
+            val newFragment = WebViewFragment()
+            parentFragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.fragment_container, newFragment, "WebViewFrag")
+                .addToBackStack(null)
+                .commit()
+        }
+
+        viewModel.listWasShown()
+    }*/
 }

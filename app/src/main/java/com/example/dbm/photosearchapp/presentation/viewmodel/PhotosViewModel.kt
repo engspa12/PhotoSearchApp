@@ -4,12 +4,13 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.test.espresso.idling.CountingIdlingResource
-import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.di.DispatchersModule
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCase
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosFromFeedUseCase
+import com.example.dbm.photosearchapp.domain.util.PhotosDomainError
 import com.example.dbm.photosearchapp.presentation.state.PhotosUIState
-import com.example.dbm.photosearchapp.util.MessageWrapper
+import com.example.dbm.photosearchapp.presentation.util.PhotosViewError
+import com.example.dbm.photosearchapp.presentation.util.TitleType
 import com.example.dbm.photosearchapp.util.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,15 +42,15 @@ class PhotosViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     _uiState.update {
                         if(result.value.isEmpty()){
-                            it.copy(listPhotos = result.value, listHasChanged = true, titleText = MessageWrapper(R.string.no_search_results_for, searchTerm), isLoading = false)
+                            it.copy(listPhotos = result.value, listHasChanged = true, titleType = TitleType.NO_RESULTS, isLoading = false)
                         } else {
-                            it.copy(listPhotos = result.value, listHasChanged = true, titleText = MessageWrapper(R.string.search_results_for, searchTerm), isLoading = false)
+                            it.copy(listPhotos = result.value, listHasChanged = true, titleType = TitleType.SEARCH_PHOTOS_RESULTS, isLoading = false)
                         }
                     }
                 }
                 is ResultWrapper.Failure -> {
                     _uiState.update {
-                        it.copy(errorPresent = true, errorMessage = result.errorMessage, isLoading = false)
+                        it.copy(errorPresent = true, errorType = getErrorType(result.error), isLoading = false)
                     }
                 }
             }
@@ -68,13 +69,21 @@ class PhotosViewModel @Inject constructor(
                 }
                 is ResultWrapper.Failure -> {
                     _uiState.update {
-                        it.copy(errorPresent = true, errorMessage = result.errorMessage, isLoading = false)
+                        it.copy(errorPresent = true, errorType = getErrorType(result.error), isLoading = false)
                     }
                 }
             }
             //Delay added to wait for images to be completely loaded
             delay(1500L)
             decrementIdlingResourceAPICall()
+        }
+    }
+
+    private fun getErrorType(error: PhotosDomainError?): PhotosViewError {
+        return when(error) {
+            PhotosDomainError.UNKNOWN_ERROR -> PhotosViewError.UNKNOWN_ERROR
+            PhotosDomainError.GENERIC_ERROR -> PhotosViewError.GENERIC_ERROR
+            else -> PhotosViewError.GENERIC_ERROR
         }
     }
 

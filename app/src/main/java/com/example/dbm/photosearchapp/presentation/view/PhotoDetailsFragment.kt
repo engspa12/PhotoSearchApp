@@ -9,7 +9,7 @@ import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.databinding.FragmentPhotoDetailsBinding
 import com.example.dbm.photosearchapp.presentation.model.PhotoView
 import com.example.dbm.photosearchapp.presentation.viewmodel.PhotosViewModel
-import com.example.dbm.photosearchapp.util.loadImage
+import com.example.dbm.photosearchapp.presentation.util.loadImage
 import kotlinx.coroutines.launch
 
 class PhotoDetailsFragment: Fragment(R.layout.fragment_photo_details) {

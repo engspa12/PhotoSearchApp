@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.presentation.model.PhotoView
-import com.example.dbm.photosearchapp.util.loadImage
+import com.example.dbm.photosearchapp.presentation.util.loadImage
 
 class PhotosAdapter(inputList: List<PhotoView> = listOf(), private val listener: PhotoOnClickListener): RecyclerView.Adapter<PhotosAdapter.PhotosViewHolder>() {
 
