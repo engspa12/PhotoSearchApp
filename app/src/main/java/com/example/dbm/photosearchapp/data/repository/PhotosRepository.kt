@@ -16,7 +16,7 @@ class PhotosRepository @Inject constructor(
     @DispatchersModule.IODispatcher private val coroutineDispatcher: CoroutineDispatcher
 ): IPhotosRepository {
 
-    override suspend fun getPhotosFromFeed(): ResultWrapper<List<PhotoDomain>> {
+    override suspend fun getPhotosFromFeed(): ResultWrapper<List<PhotoDomain>, Nothing> {
         return withContext(coroutineDispatcher) {
             try {
                 val networkResponse = networkDataSource.getPhotosFromFeed()
@@ -32,7 +32,7 @@ class PhotosRepository @Inject constructor(
         }
     }
 
-    override suspend fun getPhotosBySearchTerm(searchTerm: String): ResultWrapper<List<PhotoDomain>> {
+    override suspend fun getPhotosBySearchTerm(searchTerm: String): ResultWrapper<List<PhotoDomain>, Nothing> {
        return withContext(coroutineDispatcher) {
            try {
                val networkResponse = networkDataSource.getPhotosBySearchTerm(searchTerm = searchTerm)
