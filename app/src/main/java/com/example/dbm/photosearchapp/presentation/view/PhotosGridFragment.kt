@@ -117,20 +117,4 @@ class PhotosGridFragment: Fragment(R.layout.fragment_photos_grid), PhotosAdapter
 
         viewModel.listWasShown()
     }
-
-    /*override fun onItemClick(position: Int) {
-        val fragment = parentFragmentManager.findFragmentByTag("WebViewFrag")
-
-        if(fragment == null){
-            val newFragment = WebViewFragment()
-            parentFragmentManager
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.fragment_container, newFragment, "WebViewFrag")
-                .addToBackStack(null)
-                .commit()
-        }
-
-        viewModel.listWasShown()
-    }*/
 }
