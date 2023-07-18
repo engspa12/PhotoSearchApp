@@ -20,10 +20,9 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import java.io.IOException
-import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCase
-import com.example.dbm.photosearchapp.util.MessageWrapper
+import com.example.dbm.photosearchapp.domain.util.PhotosDomainError
+import com.example.dbm.photosearchapp.presentation.util.PhotosViewError
 import com.example.dbm.photosearchapp.util.ResultWrapper
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -67,7 +66,7 @@ class PhotosViewModelTest {
             verify(getPhotosFromFeedUseCaseMock, times(1)).invoke()
             assertThat(SUT.uiState.value.isLoading).isEqualTo(false)
             assertThat(SUT.uiState.value.errorPresent).isEqualTo(false)
-            assertThat(SUT.uiState.value.errorMessage.messageResource).isEqualTo(0)
+            assertThat(SUT.uiState.value.errorType).isEqualTo(PhotosViewError.NONE)
             assertThat(SUT.uiState.value.listPhotos[0].title).isEqualTo("Title 0")
             assertThat(SUT.uiState.value.listPhotos[1].date).isEqualTo("Date 1")
             assertThat(SUT.uiState.value.listPhotos[2].author).isEqualTo("Author 2")
@@ -91,7 +90,7 @@ class PhotosViewModelTest {
             verify(getPhotosFromFeedUseCaseMock, times(1)).invoke()
             assertThat(SUT.uiState.value.isLoading).isEqualTo(false)
             assertThat(SUT.uiState.value.errorPresent).isEqualTo(true)
-            assertThat(SUT.uiState.value.errorMessage.messageResource).isEqualTo(R.string.error_message)
+            assertThat(SUT.uiState.value.errorType).isEqualTo(PhotosViewError.GENERIC_ERROR)
         }
     }
 
@@ -115,7 +114,7 @@ class PhotosViewModelTest {
             throw IOException("An error occurred in the ViewModel test")
         }*/
         Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenReturn(
-            ResultWrapper.Failure(errorMessage = MessageWrapper(messageResource = R.string.error_message))
+            ResultWrapper.Failure(error = PhotosDomainError.GENERIC_ERROR)
         )
     }
 }

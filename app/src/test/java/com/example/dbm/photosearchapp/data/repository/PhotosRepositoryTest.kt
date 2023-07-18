@@ -83,7 +83,6 @@ class PhotosRepositoryTest {
 
             val response = SUT.getPhotosFromFeed() as ResultWrapper.Failure
             verify(remoteAPI, times(1)).getPhotosFromFeed()
-            assertThat(response.errorMessage.messageResource).isEqualTo(0)
             assertThat(response.exception?.message).isEqualTo("An error occurred in networkResponse")
         }
     }
