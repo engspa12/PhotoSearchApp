@@ -30,8 +30,8 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.junit.MockitoRule
 import com.example.dbm.photosearchapp.R
 import com.example.dbm.photosearchapp.domain.usecase.IGetPhotosBySearchTermUseCase
+import com.example.dbm.photosearchapp.domain.util.PhotosDomainError
 import com.example.dbm.photosearchapp.launchFragmentInHiltContainer
-import com.example.dbm.photosearchapp.util.MessageWrapper
 import com.example.dbm.photosearchapp.util.ResultWrapper
 import org.junit.After
 
@@ -97,7 +97,7 @@ class PhotosGridFragmentIntegrationTest {
             onView(withId(R.id.recycler_view)).check(matches(not(isDisplayed())))
             onView(withId(R.id.progress_bar_message)).check(matches(not(isDisplayed())))
             onView(withId(R.id.empty_message)).check(matches(isDisplayed()))
-            onView(withText(context.getString(R.string.error_message))).check(matches(isDisplayed()))
+            onView(withText(context.getString(R.string.generic_error_message))).check(matches(isDisplayed()))
         }
     }
 
@@ -124,7 +124,7 @@ class PhotosGridFragmentIntegrationTest {
 
     private suspend fun failureResponse() {
         Mockito.`when`(getPhotosFromFeedUseCaseMock.invoke()).thenReturn(
-            ResultWrapper.Failure(errorMessage = MessageWrapper(messageResource = R.string.error_message))
+            ResultWrapper.Failure(error = PhotosDomainError.GENERIC_ERROR)
         )
     }
 }
