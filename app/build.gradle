@@ -84,7 +84,7 @@ dependencies {
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.42'
     androidTestAnnotationProcessor 'com.google.dagger:hilt-android-compiler:2.42'
 
-    def fragment_version = "1.5.4"
+    def fragment_version = "1.6.1"
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
 
     implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
