@@ -25,7 +25,7 @@ fun ImageView.loadImage(url: String){
 fun PhotosViewError.mapToStringResource(): Int{
     return when(this){
         PhotosViewError.GENERIC_ERROR -> R.string.generic_error_message
-        PhotosViewError.UNKNOWN_ERROR -> R.string.generic_error_message
+        PhotosViewError.UNKNOWN_ERROR -> R.string.error_unknown
         else -> R.string.generic_error_message
     }
 }
